@@ -21,8 +21,8 @@ type TargetPartial {
 }
 
 type Target {
-  meaning: Int!
   value: [String!]!
+  meaning: Int!
   tags: [Tag]!
 }
 
@@ -32,17 +32,17 @@ type ReferencePartial {
 
 type Reference {
   source: Source!
-  type: ReferenceType!
+  type: Type!
   tags: [Tag]!
 }
 
-enum ReferenceType {
+enum Type {
   DIRECT
   MEANING
   IDENTICAL
 }
 
 enum Tag {
-  xxx
-  ...
+  TUSH
+  # todo: add more
 }
