@@ -1,30 +1,28 @@
 type Query {
   verb(id: ID!): Entry
-  findEntry(index: String!): [Entry]!
+  findEntry(value: String!): [Entry]!
 }
 
 type Entry {
   id: ID!
-  key: Key!
-  ...DefinitionOrReference
+  source: Source!
+  ...TargetOrReference
 }
 
-type Key {
-  index: String!
-  # meaning in source language
+type Source {
+  value: String!
   meaning: Int!
 }
 
-type DefinitionOrReference = DefinitionPartial | ReferencePartial
+type TargetOrReference = TargetPartial | ReferencePartial
 
-type DefinitionPartial {
-  definitions: [Definition!]!
+type TargetPartial {
+  target: [Target!]!
 }
 
-type Definition {
-  # meaning in target language
+type Target {
   meaning: Int!
-  approximation: [String!]!
+  value: [String!]!
   tags: [Tag]!
 }
 
@@ -33,7 +31,7 @@ type ReferencePartial {
 }
 
 type Reference {
-  key: Key!
+  source: Source!
   type: ReferenceType!
   tags: [Tag]!
 }
