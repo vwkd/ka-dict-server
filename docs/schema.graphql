@@ -11,7 +11,8 @@ type Entry {
 
 type Key {
   index: String!
-  variant: Int!
+  # meaning in source language
+  meaning: Int!
 }
 
 type DefinitionOrReference = DefinitionPartial | ReferencePartial
@@ -21,8 +22,9 @@ type DefinitionPartial {
 }
 
 type Definition {
-  variant: Int!
-  formulations: [String!]!
+  # meaning in target language
+  meaning: Int!
+  approximation: [String!]!
   tags: [Tag]!
 }
 
