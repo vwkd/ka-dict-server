@@ -1,50 +1,48 @@
 type Query {
-  verb(id: ID!): Verb
-  // verbs(amount: Int!, before: ID, after: ID): [Verb]!
-  findVerb(index: String!): [Verb]!
+  entry(id: ID!): Entry
+  findEntry(index: String!): [Entry]!
 }
 
-type Verb {
+type Entry {
   id: ID!
+  key: Key!
   ...DefinitionOrReference
 }
 
-type DefinitionOrReference = Definition | Reference
+type Key {
+  index: String!
+  variant: Int!
+}
+
+type DefinitionOrReference = DefinitionPartial | ReferencePartial
+
+type DefinitionPartial {
+  definitions: [Definition!]!
+}
 
 type Definition {
-  key: Key!
-  value: [Meaning!]!
-}
-
-type Key {
   variant: Int!
-  index: String!
-}
-
-type Meaning {
-  position: Int!
-  entries: [String!]!
+  formulations: [String!]!
   tags: [Tag]!
 }
 
-enum Tag {
-  xxx
-  yyy
+type ReferencePartial {
+  reference: Reference!
 }
 
 type Reference {
   key: Key!
-  value: Ref!
-}
-
-type Ref {
-  kind: Kind!
-  key: Key!
+  type: ReferenceType!
   tags: [Tag]!
 }
 
-enum Kind {
+enum ReferenceType {
   DIRECT
   MEANING
   IDENTICAL
+}
+
+enum Tag {
+  xxx
+  ...
 }
