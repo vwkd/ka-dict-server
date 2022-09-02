@@ -21,8 +21,8 @@ type TargetPartial {
 }
 
 type Target {
-  meaning: Int!
   value: [String!]!
+  meaning: Int!
   tags: [Tag]!
 }
 
