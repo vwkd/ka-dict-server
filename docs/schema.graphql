@@ -1,0 +1,50 @@
+type Query {
+  verb(id: ID!): Verb
+  // verbs(amount: Int!, before: ID, after: ID): [Verb]!
+  findVerb(index: String!): [Verb]!
+}
+
+type Verb {
+  id: ID!
+  ...DefinitionOrReference
+}
+
+type DefinitionOrReference = Definition | Reference
+
+type Definition {
+  key: Key!
+  value: [Meaning!]!
+}
+
+type Key {
+  variant: Int!
+  index: String!
+}
+
+type Meaning {
+  position: Int!
+  entries: [String!]!
+  tags: [Tag]!
+}
+
+enum Tag {
+  xxx
+  yyy
+}
+
+type Reference {
+  key: Key!
+  value: Ref!
+}
+
+type Ref {
+  kind: Kind!
+  key: Key!
+  tags: [Tag]!
+}
+
+enum Kind {
+  DIRECT
+  MEANING
+  IDENTICAL
+}
