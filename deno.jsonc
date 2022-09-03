@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "schema": "deno run --allow-write --no-check scripts/writeSchema.ts"
+  }
+}
