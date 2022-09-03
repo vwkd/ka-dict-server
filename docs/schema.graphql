@@ -23,6 +23,7 @@ type Target {
 }
 
 enum Tag {
+  # todo: add more
   TUSH
 }
 
