@@ -12,11 +12,11 @@ function entryResolver(_, { id }) {
 }
 
 // defaults to start of list, assumes sorted list
-function findEntryResolver(_, { value }) {
+function findEntriesResolver(_, { value }) {
 
   // TODO: assert term provided, amount is string
 
-  return database.findEntry(value);
+  return database.findEntries(value);
 }
 
 // --------- SCHEMA ---------
@@ -140,14 +140,14 @@ const queryType = new GraphQLObjectType({
       },
       resolve: entryResolver,
     },
-    findEntry: {
+    findEntries: {
       type: new GraphQLNonNull(new GraphQLList(entryType)),
       args: {
         value: {
           type: new GraphQLNonNull(GraphQLString),
         },
       },
-      resolve: findEntryResolver,
+      resolve: findEntriesResolver,
     },
   },
 });

@@ -1,6 +1,6 @@
 type Query {
   entry(id: ID!): Entry
-  findEntry(value: String!): [Entry]!
+  findEntries(value: String!): [Entry]!
 }
 
 union Entry = TargetEntry | ReferenceEntry

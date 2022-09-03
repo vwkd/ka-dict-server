@@ -37,13 +37,13 @@ function entry(id) {
   return entriesArray.find(entry => entry.id == id);
 }
 
-function findEntry(term) {
+function findEntries(term) {
   return entriesArray.filter(entry => entry.source.value.includes(term) || entry.target?.some(e => e.value.includes(term)) || entry.reference?.source.value.includes(term));
 }
 
 const database = {
   entry,
-  findEntry,
+  findEntries,
 }
 
 export { database };
