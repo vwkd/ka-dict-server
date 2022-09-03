@@ -107,7 +107,7 @@ const referenceEntryType = new GraphQLObjectType({
       type: new GraphQLNonNull(sourceType),
     },
     reference: {
-      type: new GraphQLNonNull(new GraphQLList(referenceType)),
+      type: new GraphQLNonNull(referenceType),
     },
   }
 });
