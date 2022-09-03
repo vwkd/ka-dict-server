@@ -11,12 +11,6 @@ type TargetEntry {
   target: [Target!]!
 }
 
-type ReferenceEntry {
-  id: ID!
-  source: Source!
-  reference: Reference!
-}
-
 type Source {
   value: String!
   meaning: Int!
@@ -26,6 +20,16 @@ type Target {
   value: [String!]!
   meaning: Int!
   tags: [Tag]!
+}
+
+enum Tag {
+  TUSH
+}
+
+type ReferenceEntry {
+  id: ID!
+  source: Source!
+  reference: Reference!
 }
 
 type Reference {
@@ -38,9 +42,4 @@ enum Type {
   DIRECT
   MEANING
   IDENTICAL
-}
-
-enum Tag {
-  TUSH
-  # todo: add more
 }
