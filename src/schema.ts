@@ -23,8 +23,8 @@ async function findEntryResolver(_, { value }) {
 
 // BEWARE: definitions must be in order from leaf types all the way up to root type
 
-const typeType = new GraphQLEnumType({
-  name: 'Type',
+const kindType = new GraphQLEnumType({
+  name: 'Kind',
   values: {
     DIRECT: {},
     MEANING: {},
@@ -74,7 +74,7 @@ const referenceType = new GraphQLObjectType({
       type: new GraphQLNonNull(sourceType),
     },
     type: {
-      type: new GraphQLNonNull(typeType),
+      type: new GraphQLNonNull(kindType),
     },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
