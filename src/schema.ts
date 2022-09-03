@@ -73,7 +73,7 @@ const referenceType = new GraphQLObjectType({
     source: {
       type: new GraphQLNonNull(sourceType),
     },
-    type: {
+    kind: {
       type: new GraphQLNonNull(kindType),
     },
     tags: {
