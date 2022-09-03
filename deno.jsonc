@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --unstable --allow-net src/mod.ts"
+    "start": "deno run --allow-net src/mod.ts"
     "schema": "deno run --allow-write scripts/writeSchema.ts"
   }
 }

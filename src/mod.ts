@@ -1,3 +1,4 @@
+import { serve } from "./deps.ts";
 import { graphql } from "./deps.ts";
 import { schema } from "./schema.ts";
 
@@ -46,4 +47,4 @@ async function handleRequest(request: Request) {
 }
 
 // When running locally in Deno CLI is listening on http://localhost:8000
-Deno.serve(handleRequest);
+serve(handleRequest);
