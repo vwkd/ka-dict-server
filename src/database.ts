@@ -38,7 +38,7 @@ function entry(id) {
 }
 
 function findEntry(term) {
-  return entriesArray.filter(entry => entry.source.value.contains(term) || entry?.target.some(e => e.value.contains(term)) || entry?.reference.source.value.contains(term));
+  return entriesArray.filter(entry => entry.source.value.includes(term) || entry.target?.some(e => e.value.includes(term)) || entry.reference?.source.value.includes(term));
 }
 
 const database = {
