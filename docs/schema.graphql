@@ -24,6 +24,7 @@ type Target {
 
 enum Tag {
   KACH
+  # todo: add more
 }
 
 type ReferenceEntry {
