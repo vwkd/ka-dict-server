@@ -1,6 +1,6 @@
 type Query {
   entry(id: ID!): Entry
-  findEntry(value: String!): [Entry]!
+  findEntries(value: String!): [Entry]!
 }
 
 union Entry = TargetEntry | ReferenceEntry
@@ -23,7 +23,7 @@ type Target {
 }
 
 enum Tag {
-  TUSH
+  KACH
   # todo: add more
 }
 
@@ -35,11 +35,11 @@ type ReferenceEntry {
 
 type Reference {
   source: Source!
-  type: Type!
+  kind: Kind!
   tags: [Tag]!
 }
 
-enum Type {
+enum Kind {
   DIRECT
   MEANING
   IDENTICAL
