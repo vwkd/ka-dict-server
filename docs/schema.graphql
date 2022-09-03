@@ -1,5 +1,5 @@
 type Query {
-  verb(id: ID!): Entry
+  entry(id: ID!): Entry
   findEntry(value: String!): [Entry]!
 }
 
