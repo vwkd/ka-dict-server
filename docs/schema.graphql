@@ -23,7 +23,7 @@ type Target {
 }
 
 enum Tag {
-  TUSH
+  KACH
   # todo: add more
 }
 

@@ -1,29 +1,34 @@
 const entriesArray = [
   { id: 0,
     source: {
-      value: "xxx",
-      meaning: 1,
+      value: "ბუ",
+      meaning: 2,
     },
     target: [
       {
-        value: ["yyy"],
+        value: ["aufschütteln"],
         meaning: 1,
-        tags: ["zzz"],
+        tags: ["KACH"],
+      },
+      {
+        value: ["anschwellen"],
+        meaning: 2,
+        tags: ["KACH"],
       }
     ],
   },
   { id: 0,
     source: {
-      value: "xxx",
-      meaning: 1,
+      value: "ახლ",
+      meaning: 3,
     },
     reference: {
       source: {
-        value: "yyy",
-        meaning: 1,
+        value: "ხლ",
+        meaning: 3,
       },
       type: "DIRECT",
-      tags: ["zzz"],
+      tags: [],
     },
   },
 ];
