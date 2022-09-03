@@ -35,11 +35,11 @@ type ReferenceEntry {
 
 type Reference {
   source: Source!
-  type: Type!
+  kind: Kind!
   tags: [Tag]!
 }
 
-enum Type {
+enum Kind {
   DIRECT
   MEANING
   IDENTICAL

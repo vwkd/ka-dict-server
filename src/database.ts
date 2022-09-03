@@ -27,7 +27,7 @@ const entriesArray = [
         value: "ხლ",
         meaning: 3,
       },
-      type: "DIRECT",
+      kind: "DIRECT",
       tags: [],
     },
   },
