@@ -3,10 +3,18 @@ type Query {
   findEntry(value: String!): [Entry]!
 }
 
-type Entry {
+union Entry = TargetEntry | ReferenceEntry
+
+type TargetEntry {
   id: ID!
   source: Source!
-  ...TargetOrReference
+  target: [Target!]!
+}
+
+type ReferenceEntry {
+  id: ID!
+  source: Source!
+  reference: Reference!
 }
 
 type Source {
@@ -14,20 +22,10 @@ type Source {
   meaning: Int!
 }
 
-type TargetOrReference = TargetPartial | ReferencePartial
-
-type TargetPartial {
-  target: [Target!]!
-}
-
 type Target {
   value: [String!]!
   meaning: Int!
   tags: [Tag]!
-}
-
-type ReferencePartial {
-  reference: Reference!
 }
 
 type Reference {
