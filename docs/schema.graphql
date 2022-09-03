@@ -32,17 +32,17 @@ type ReferencePartial {
 
 type Reference {
   source: Source!
-  type: ReferenceType!
+  type: Type!
   tags: [Tag]!
 }
 
-enum ReferenceType {
+enum Type {
   DIRECT
   MEANING
   IDENTICAL
 }
 
 enum Tag {
-  xxx
-  ...
+  TUSH
+  # todo: add more
 }
