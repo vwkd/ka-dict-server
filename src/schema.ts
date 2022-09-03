@@ -118,6 +118,14 @@ const entryType = new GraphQLUnionType({
     targetEntryType,
     referenceEntryType,
   ],
+  resolveType(value) {
+    if (value.target) {
+      return "TargetEntry";
+    }
+    if (value.reference) {
+      return "ReferenceEntry";
+    }
+  },
 });
 
 const queryType = new GraphQLObjectType({
