@@ -17,7 +17,7 @@ const entriesArray = [
       }
     ],
   },
-  { id: 0,
+  { id: 1,
     source: {
       value: "ახლ",
       meaning: 3,
