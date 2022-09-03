@@ -21,4 +21,4 @@ jobs:
           deno-version: v1.x
           
       - name: Run server
-        run: deno run --allow-net src/mod.ts
+        run: deno task start
