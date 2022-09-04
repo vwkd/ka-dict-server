@@ -23,6 +23,7 @@ const entriesArray = [
       meaning: 3,
     },
     reference: {
+      id: 99,
       source: {
         value: "ხლ",
         meaning: 3,
