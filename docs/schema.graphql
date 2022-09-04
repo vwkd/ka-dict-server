@@ -34,6 +34,7 @@ type ReferenceEntry {
 }
 
 type Reference {
+  id: ID!
   source: Source!
   kind: Kind!
   tags: [Tag]!

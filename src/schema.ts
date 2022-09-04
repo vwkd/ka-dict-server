@@ -70,6 +70,9 @@ const targetType = new GraphQLObjectType({
 const referenceType = new GraphQLObjectType({
   name: "Reference",
   fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
     source: {
       type: new GraphQLNonNull(sourceType),
     },
