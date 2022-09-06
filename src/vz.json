@@ -1,0 +1,345 @@
+[
+  {
+    "id": 1,
+    "source": {
+      "value": "ადგილ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "umstellen",
+          "translozieren"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "source": {
+      "value": "ადვილ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "erleichtern"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "source": {
+      "value": "ავ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "böse sein"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "source": {
+      "value": "ასპარეზ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "wettkämpfen"
+        ],
+        "meaning": 1,
+        "tags": [
+          "VA"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "source": {
+      "value": "ბალთ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "zerstückeln"
+        ],
+        "meaning": 1,
+        "tags": [
+          "KACH",
+          "PSCH"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "source": {
+      "value": "ბორძიკ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "stolpern"
+        ],
+        "meaning": 1,
+        "tags": []
+      },
+      {
+        "value": [
+          "stammeln"
+        ],
+        "meaning": 2,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "source": {
+      "value": "ბუ",
+      "meaning": 2
+    },
+    "target": [
+      {
+        "value": [
+          "aufschütteln"
+        ],
+        "meaning": 1,
+        "tags": [
+          "KACH"
+        ]
+      },
+      {
+        "value": [
+          "anschwellen"
+        ],
+        "meaning": 2,
+        "tags": [
+          "KACH"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "source": {
+      "value": "გებულ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "verstehen"
+        ],
+        "meaning": 1,
+        "tags": []
+      },
+      {
+        "value": [
+          "vernehmen"
+        ],
+        "meaning": 2,
+        "tags": []
+      },
+      {
+        "value": [
+          "gewinnen"
+        ],
+        "meaning": 3,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "source": {
+      "value": "გონ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "vernehmen",
+          "hören"
+        ],
+        "meaning": 1,
+        "tags": []
+      },
+      {
+        "value": [
+          "gedenken",
+          "sich erinnern"
+        ],
+        "meaning": 2,
+        "tags": []
+      },
+      {
+        "value": [
+          "ersinnen",
+          "erfinden"
+        ],
+        "meaning": 3,
+        "tags": []
+      },
+      {
+        "value": [
+          "vortäuschen"
+        ],
+        "meaning": 4,
+        "tags": []
+      },
+      {
+        "value": [
+          "meinen",
+          "glauben"
+        ],
+        "meaning": 5,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "source": {
+      "value": "ავდარ",
+      "meaning": 1
+    },
+    "reference": {
+      "id": 11,
+      "source": {
+        "value": "ავდრ",
+        "meaning": 1
+      },
+      "kind": "DIRECT",
+      "tags": []
+    }
+  },
+  {
+    "id": 11,
+    "source": {
+      "value": "ავდრ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "schlechtes Wetter sein"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "source": {
+      "value": "ასკინკილა",
+      "meaning": 1
+    },
+    "reference": {
+      "id": 13,
+      "source": {
+        "value": "ასკინკილავ",
+        "meaning": 1
+      },
+      "kind": "IDENTICAL",
+      "tags": []
+    }
+  },
+  {
+    "id": 13,
+    "source": {
+      "value": "ასკინკილავ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "auf einem Bein hüpfen"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "source": {
+      "value": "ენამზე",
+      "meaning": 1
+    },
+    "reference": {
+      "id": 15,
+      "source": {
+        "value": "ენამჭევრ",
+        "meaning": 1
+      },
+      "kind": "MEANING",
+      "tags": []
+    }
+  },
+  {
+    "id": 15,
+    "source": {
+      "value": "ენამჭევრ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "redegewandt sein"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "source": {
+      "value": "ლაქავ",
+      "meaning": 1
+    },
+    "target": [
+      {
+        "value": [
+          "beflecken",
+          "beklecksen"
+        ],
+        "meaning": 1,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "source": {
+      "value": "ლაქიან",
+      "meaning": 1
+    },
+    "reference": {
+      "id": 16,
+      "source": {
+        "value": "ლაქავ",
+        "meaning": 1
+      },
+      "kind": "MEANING",
+      "tags": []
+    }
+  }
+]
