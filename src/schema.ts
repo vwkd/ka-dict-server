@@ -36,6 +36,8 @@ const tagType = new GraphQLEnumType({
   name: 'Tag',
   values: {
     "KACH": {},
+    "PSCH": {},
+    "VA": {},
     // todo: add more
   },
 });
