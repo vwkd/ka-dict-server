@@ -1,0 +1,76 @@
+type Word {
+  id: ID!
+  # concatenated values of components
+  value: String!
+  components: [Component!]!
+  verbForms: [VerbForm!]!
+}
+
+type Component {
+  kind: Kind!
+  value: String!
+}
+
+type VerbForm {
+  verb_id: ID!
+  screeve: Screeve!
+  person_subject: Person!
+  # todo: what if no object?
+  person_object: Person!
+}
+
+enum Kind {
+  # grammatical, not necessarily logical!
+  PERSON_SUBJECT
+  # grammatical, not necessarily logical!
+  PERSON_OBJECT
+  PREVERB
+  ROOT
+  THEMA
+  VERSION
+  # todo: add more
+}
+
+enum Screeve {
+  PRESENT_INDICATIVE
+  IMPERFECT
+  PRESENT_SUBJUNCTIVE
+  FUTURE_INDICATIVE
+  CONDITIONAL
+  FUTURE_SUBJUNCTIVE
+  AORIST_IMPERFECTIVE
+  AORIST_PERFECTIVE
+  OPTATIVE_IMPERFECTIVE
+  OPTATIVE_PERFECTIVE
+  # todo: add more
+  IMPERATIVE_POSITIVE
+  IMPERATIVE_NEGATIVE_ORDER
+  IMPERATIVE_NEGATIVE_WISH
+  INDICATIVE
+}
+
+# todo: not all screeves have all persons, e.g. first person imperative, same person subject and object, etc.
+type Person {
+  S1
+  S2
+  S3
+  P1
+  P2
+  P3
+}
+
+type Verb {
+  id: ID!
+  # todo: add more fields, e.g. source, target
+  conjugation: Conjugation!
+}
+
+type Conjugation {
+  ...SCREEVE: {
+    ...PersonSubject {
+      ...PersonObject {
+        word: Word!
+      }
+    }
+  }
+}
