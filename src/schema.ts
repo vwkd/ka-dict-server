@@ -98,19 +98,13 @@ const sourceType = new GraphQLObjectType({
   }
 });
 
-const targetType = new GraphQLObjectType({
-  name: "Target",
+const definitionType = new GraphQLObjectType({
+  name: "Definition",
   fields: {
     value: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
     },
-    meaning: {
-      type: new GraphQLNonNull(GraphQLInt),
-    },
-    tags: {
-      type: new GraphQLNonNull(new GraphQLList(tagType)),
-    },
-  }
+  },
 });
 
 const referenceType = new GraphQLObjectType({
@@ -125,14 +119,42 @@ const referenceType = new GraphQLObjectType({
     kind: {
       type: new GraphQLNonNull(kindType),
     },
+  }
+});
+
+// beware: can't have union of non-object types
+const valueType = new GraphQLUnionType({
+  name: 'Value',
+  types: [
+    referenceType,
+    definitionType,
+  ],
+  resolveType(value) {
+    if (Array.isArray(value)) {
+      return "Reference";
+    } else {
+      return "Definition";
+    }
+  },
+});
+
+const targetType = new GraphQLObjectType({
+  name: "Target",
+  fields: {
+    value: {
+      type: new GraphQLNonNull(valueType),
+    },
+    meaning: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
     },
   }
 });
 
-const targetEntryType = new GraphQLObjectType({
-  name: "TargetEntry",
+const entryType = new GraphQLObjectType({
+  name: "Entry",
   fields: {
     id: {
       type: new GraphQLNonNull(GraphQLID),
@@ -144,37 +166,6 @@ const targetEntryType = new GraphQLObjectType({
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(targetType))),
     },
   }
-});
-
-const referenceEntryType = new GraphQLObjectType({
-  name: "ReferenceEntry",
-  fields: {
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-    },
-    source: {
-      type: new GraphQLNonNull(sourceType),
-    },
-    reference: {
-      type: new GraphQLNonNull(referenceType),
-    },
-  }
-});
-
-const entryType = new GraphQLUnionType({
-  name: 'Entry',
-  types: [
-    targetEntryType,
-    referenceEntryType,
-  ],
-  resolveType(value) {
-    if (value.target) {
-      return "TargetEntry";
-    }
-    if (value.reference) {
-      return "ReferenceEntry";
-    }
-  },
 });
 
 const queryType = new GraphQLObjectType({
