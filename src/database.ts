@@ -5,7 +5,7 @@ function entry(id) {
 }
 
 function findEntries(term) {
-  return entries.filter(entry => entry.source.value.includes(term) || entry.target?.some(e => e.value.some(w => w.includes(term))) || entry.reference?.source.value.includes(term));
+  return entries.filter(({ source, target }) => source.value.includes(term) || target.some(({ value }) => value.source?.value.includes(term) || value.value?.some(val => val.includes(term))));
 }
 
 const database = {
