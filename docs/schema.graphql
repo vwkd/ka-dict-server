@@ -3,9 +3,7 @@ type Query {
   findEntries(value: String!): [Entry]!
 }
 
-union Entry = TargetEntry | ReferenceEntry
-
-type TargetEntry {
+type Entry {
   id: ID!
   source: Source!
   target: [Target!]!
@@ -17,9 +15,27 @@ type Source {
 }
 
 type Target {
-  value: [String!]!
+  value: Value!
   meaning: Int!
   tags: [Tag]!
+}
+
+union Value = Reference! | Definition!
+
+type Reference {
+  id: ID!
+  source: Source!
+  kind: Kind!
+}
+
+enum Kind {
+  DIRECT
+  MEANING
+  IDENTICAL
+}
+
+type Definition {
+  value: [String!]!
 }
 
 enum Tag {
@@ -71,23 +87,4 @@ enum Tag {
   UNK
   VA
   VULG
-}
-
-type ReferenceEntry {
-  id: ID!
-  source: Source!
-  reference: Reference!
-}
-
-type Reference {
-  id: ID!
-  source: Source!
-  kind: Kind!
-  tags: [Tag]!
-}
-
-enum Kind {
-  DIRECT
-  MEANING
-  IDENTICAL
 }
