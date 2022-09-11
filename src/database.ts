@@ -2,7 +2,7 @@ import entries from "../data/vz.json" assert { type: "json" };
 import index from "../data/index.json" assert { type: "json" };
 import { Fuse } from "./deps.ts";
 
-const options = {
+export const options = {
   threshold: 0,
   ignoreLocation: true,
   minMatchCharLength: 2,
