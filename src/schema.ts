@@ -24,7 +24,7 @@ async function findEntriesResolver(_, { value }) {
 // BEWARE: definitions must be in order from leaf types all the way up to root type
 
 const kindType = new GraphQLEnumType({
-  name: 'Kind',
+  name: "Kind",
   values: {
     DIRECT: {},
     MEANING: {},
@@ -33,7 +33,7 @@ const kindType = new GraphQLEnumType({
 });
 
 const tagType = new GraphQLEnumType({
-  name: 'Tag',
+  name: "Tag",
   values: {
     "BIOL": {},
     "BOT": {},
@@ -124,7 +124,7 @@ const referenceType = new GraphQLObjectType({
 
 // beware: can't have union of non-object types
 const valueType = new GraphQLUnionType({
-  name: 'Value',
+  name: "Value",
   types: [
     referenceType,
     definitionType,
