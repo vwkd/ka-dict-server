@@ -1,4 +1,4 @@
-import entries from "./vz.json" assert { type: "json" };
+import entries from "../data/vz.json" assert { type: "json" };
 
 function entry(id) {
   return entries.find(entry => entry.id == id);
