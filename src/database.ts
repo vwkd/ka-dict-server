@@ -1,11 +1,25 @@
 import entries from "../data/vz.json" assert { type: "json" };
+import { Fuse } from "./deps.ts";
+
+const options = {
+  threshold: 0,
+  ignoreLocation: true,
+  minMatchCharLength: 2,
+  keys: [
+    "source.value",
+    "target.value.source.value",
+    "target.value.value",
+  ],
+}
+
+const fuse = new Fuse(entries, options);
 
 function entry(id) {
   return entries.find(entry => entry.id == id);
 }
 
 function findEntries(term) {
-  return entries.filter(({ source, target }) => source.value.includes(term) || target.some(({ value }) => value.source?.value.includes(term) || value.value?.some(val => val.includes(term))));
+  return fuse.search(term).map(r => r.item);
 }
 
 const database = {
