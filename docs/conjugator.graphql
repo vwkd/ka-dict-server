@@ -6,7 +6,7 @@ type Word {
   verbForms: [VerbForm!]!
 }
 
-type Component {
+type ComponentKind {
   kind: Kind!
   value: String!
 }
@@ -19,7 +19,7 @@ type VerbForm {
   person_object: Person!
 }
 
-enum Kind {
+enum ComponentKind {
   # grammatical, not necessarily logical!
   PERSON_SUBJECT
   # grammatical, not necessarily logical!
@@ -50,7 +50,7 @@ enum Screeve {
 }
 
 # todo: not all screeves have all persons, e.g. first person imperative, same person subject and object, etc.
-type Person {
+enum Person {
   S1
   S2
   S3
@@ -59,10 +59,18 @@ type Person {
   P3
 }
 
+# todo: irregularities, e.g. "doesn't exist, see screeve X", "two verbs merged, X in Present Group, Y in rest", etc.
 type Verb {
   id: ID!
   # todo: add more fields, e.g. source, target
   conjugation: Conjugation!
+  kind: VerbKind!
+  thema: Thema!
+  version: Version!
+  preverb: Preverb!
+  object: Object!
+  root: [Root!]!
+  pz: PZ!
 }
 
 type Conjugation {
@@ -73,4 +81,18 @@ type Conjugation {
       }
     }
   }
+}
+
+enum VerbKind {
+  K1
+  K2
+  K3
+  K4
+  K5
+}
+
+# validate all screeves have one and exactly one root assigned
+type Root {
+  value: String!
+  screeves: [Screeve!]!
 }
