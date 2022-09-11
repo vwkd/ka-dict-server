@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-net src/mod.ts"
-    "schema": "deno run --allow-write scripts/writeSchema.ts"
+    "start": "deno run --allow-net src/mod.ts",
+    "schema": "deno run --allow-write scripts/writeSchema.ts",
+    "index": "deno run --allow-write scripts/createIndex.ts"
   }
 }
