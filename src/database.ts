@@ -1,4 +1,5 @@
 import entries from "../data/vz.json" assert { type: "json" };
+import index from "../data/index.json" assert { type: "json" };
 import { Fuse } from "./deps.ts";
 
 const options = {
@@ -12,7 +13,9 @@ const options = {
   ],
 }
 
-const fuse = new Fuse(entries, options);
+const index = Fuse.parseIndex(indexJSON);
+
+const fuse = new Fuse(entries, options, index);
 
 function entry(id) {
   return entries.find(entry => entry.id == id);
