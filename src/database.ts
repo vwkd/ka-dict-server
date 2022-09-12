@@ -9,7 +9,7 @@ export const options = {
   keys: [
     "source.value",
     "target.value.source.value",
-    "target.value.value",
+    "target.value.value.value",
   ],
 }
 
