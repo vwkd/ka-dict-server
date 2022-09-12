@@ -35,6 +35,10 @@ enum Kind {
 }
 
 type Definition {
+  value: [Field!]!
+}
+
+type Field {
   value: [String!]!
 }
 
