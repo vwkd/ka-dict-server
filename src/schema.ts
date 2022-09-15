@@ -104,14 +104,8 @@ const fieldType = new GraphQLObjectType({
     value: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
     },
-  },
-});
-
-const definitionType = new GraphQLObjectType({
-  name: "Definition",
-  fields: {
-    value: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(fieldType))),
+    tags: {
+      type: new GraphQLNonNull(new GraphQLList(tagType)),
     },
   },
 });
@@ -128,22 +122,25 @@ const referenceType = new GraphQLObjectType({
     kind: {
       type: new GraphQLNonNull(kindType),
     },
+    tags: {
+      type: new GraphQLNonNull(new GraphQLList(tagType)),
+    },
   }
 });
 
 // beware: can't have union of non-object types
-const valueType = new GraphQLUnionType({
-  name: "Value",
+const definitionType = new GraphQLUnionType({
+  name: "Definition",
   types: [
     referenceType,
-    definitionType,
+    fieldType,
   ],
   resolveType(value) {
     if (value.id) {
       return "Reference";
     }
     if (value.value) {
-      return "Definition";
+      return "Field";
     }
   },
 });
@@ -152,13 +149,10 @@ const targetType = new GraphQLObjectType({
   name: "Target",
   fields: {
     value: {
-      type: new GraphQLNonNull(valueType),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(definitionType))),
     },
     meaning: {
       type: new GraphQLNonNull(GraphQLInt),
-    },
-    tags: {
-      type: new GraphQLNonNull(new GraphQLList(tagType)),
     },
   }
 });
