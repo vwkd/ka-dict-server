@@ -15,31 +15,23 @@ type Source {
 }
 
 type Target {
-  value: Value!
+  value: [Definition!]!
   meaning: Int!
-  tags: [Tag]!
 }
 
-union Value = Reference | Definition
+union Definition = Reference | Field
 
 type Reference {
   id: ID!
   source: Source!
   kind: Kind!
+  tags: [Tag]!
 }
 
 enum Kind {
   DIRECT
   MEANING
   IDENTICAL
-}
-
-type Definition {
-  value: [Field!]!
-}
-
-type Field {
-  value: [String!]!
 }
 
 enum Tag {
@@ -91,4 +83,9 @@ enum Tag {
   UNK
   VA
   VULG
+}
+
+type Field {
+  value: [String!]!
+  tags: [Tag]!
 }
