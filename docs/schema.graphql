@@ -24,6 +24,7 @@ union Definition = Reference | Field
 type Reference {
   id: ID!
   source: Source!
+  meaning: Int
   kind: Kind!
   tags: [Tag]!
 }
