@@ -119,6 +119,9 @@ const referenceType = new GraphQLObjectType({
     source: {
       type: new GraphQLNonNull(sourceType),
     },
+    meaning: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
     kind: {
       type: new GraphQLNonNull(kindType),
     },
