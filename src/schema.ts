@@ -98,11 +98,23 @@ const sourceType = new GraphQLObjectType({
   }
 });
 
+const elementType = new GraphQLObjectType({
+  name: "Element",
+  fields: {
+    value: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    category: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
+    },
+  },
+});
+
 const fieldType = new GraphQLObjectType({
   name: "Field",
   fields: {
     value: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(elementType))),
     },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
