@@ -1,19 +1,6 @@
-import entries from "../data/vz.json" assert { type: "json" };
-import index from "../data/index.json" assert { type: "json" };
-import { Fuse } from "./deps.ts";
+import { entries, Fuse, fuse_options, fuse_index } from "./deps.ts";
 
-export const options = {
-  threshold: 0,
-  ignoreLocation: true,
-  minMatchCharLength: 2,
-  keys: [
-    "source.value",
-    "target.value.source.value",
-    "target.value.value",
-  ],
-}
-
-const fuse = new Fuse(entries, options, Fuse.parseIndex(index));
+const fuse = new Fuse(entries, fuse_options, Fuse.parseIndex(fuse_index));
 
 function entry(id) {
   return entries.find(entry => entry.id == id);
