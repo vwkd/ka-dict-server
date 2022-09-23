@@ -132,7 +132,7 @@ const referenceType = new GraphQLObjectType({
       type: new GraphQLNonNull(sourceType),
     },
     meaning: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: GraphQLInt,
     },
     kind: {
       type: new GraphQLNonNull(kindType),
