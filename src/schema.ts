@@ -93,7 +93,7 @@ const sourceType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
     },
     meaning: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: GraphQLInt,
     },
   }
 });
@@ -167,7 +167,7 @@ const targetType = new GraphQLObjectType({
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(definitionType))),
     },
     meaning: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: GraphQLInt,
     },
   }
 });
