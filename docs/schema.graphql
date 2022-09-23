@@ -11,12 +11,12 @@ type Entry {
 
 type Source {
   value: String!
-  meaning: Int!
+  meaning: Int
 }
 
 type Target {
   value: [Definition!]!
-  meaning: Int!
+  meaning: Int
 }
 
 union Definition = Reference | Field
@@ -24,6 +24,7 @@ union Definition = Reference | Field
 type Reference {
   id: ID!
   source: Source!
+  meaning: Int
   kind: Kind!
   tags: [Tag]!
 }
@@ -86,6 +87,11 @@ enum Tag {
 }
 
 type Field {
-  value: [String!]!
+  value: [Element!]!
   tags: [Tag]!
+}
+
+type Element {
+  value: String!
+  category: [String!]!
 }
