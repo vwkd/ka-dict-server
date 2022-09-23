@@ -11,12 +11,12 @@ type Entry {
 
 type Source {
   value: String!
-  meaning: Int!
+  meaning: Int
 }
 
 type Target {
   value: [Definition!]!
-  meaning: Int!
+  meaning: Int
 }
 
 union Definition = Reference | Field
