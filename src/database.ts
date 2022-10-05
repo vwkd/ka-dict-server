@@ -10,10 +10,21 @@ function filterResults(results) {
     
     const { item, matches } = result;
     
+    // don't filter if match only for index
+    if (matches.length == 1 && matches[0].key == "source.value") {
+      resultsNew.push(item);
+      continue;
+    }
+    
     let resultNew = {};
     
     // note: group multiple matches per key, otherwise would become separate entries in highest ancestor array if processes separately
     for (const key of fuse_options.keys) {
+      // skip match for index, otherwise would add whole item again
+      if (key == "source.value") {
+        continue;
+      }
+      
       const matchesForKey = matches.filter(({ key: k }) => k == key);
       
       if (matchesForKey.length) {
