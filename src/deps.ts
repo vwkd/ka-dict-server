@@ -11,7 +11,6 @@ export { deepFilter } from "https://raw.githubusercontent.com/vwkd/code-web-util
 export const fuse_options = {
   threshold: 0,
   ignoreLocation: true,
-  minMatchCharLength: 2,
   includeMatches: true,
   keys: [
     "source.value",
