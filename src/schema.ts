@@ -12,11 +12,11 @@ function entryResolver(_, { id }) {
 }
 
 // defaults to start of list, assumes sorted list
-function findEntriesResolver(_, { value }) {
+function findEntriesResolver(_, { value, first, offset }) {
 
   // TODO: assert term provided, amount is string
 
-  return database.findEntries(value);
+  return database.findEntries(value, first, offset);
 }
 
 // --------- SCHEMA ---------
@@ -204,6 +204,12 @@ const queryType = new GraphQLObjectType({
       args: {
         value: {
           type: new GraphQLNonNull(GraphQLString),
+        },
+        first: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+        offset: {
+          type: new GraphQLNonNull(GraphQLInt),
         },
       },
       resolve: findEntriesResolver,
