@@ -1,6 +1,6 @@
 type Query {
   entry(id: ID!): Entry
-  findEntries(value: String!): [Entry]!
+  findEntries(value: String!, first: Int!, offset: Int!): [Entry]!
 }
 
 type Entry {
