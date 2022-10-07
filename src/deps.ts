@@ -3,7 +3,7 @@ export { graphql, GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, Gr
 
 import Fuse from "https://cdn.skypack.dev/fuse.js@6.6.2";
 export { Fuse };
-import entries from "https://raw.githubusercontent.com/vwkd/ka-dict-parser/output/vz.json" assert { type: "json" };
+import entries from "https://raw.githubusercontent.com/vwkd/kita-parser/output/vz.json" assert { type: "json" };
 export { entries };
 export { deepMerge } from "https://raw.githubusercontent.com/vwkd/code-web-utilities/d29b456b80de1f60b349238908b86bd83ebcb3b0/src/deep_merge.ts";
 export { deepFilter } from "https://raw.githubusercontent.com/vwkd/code-web-utilities/d29b456b80de1f60b349238908b86bd83ebcb3b0/src/deep_filter.ts";
