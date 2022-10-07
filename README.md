@@ -1,6 +1,6 @@
 # README
 
-The API server of ka-dict accessed by the Web server
+The API server of Kita accessed by the Web server
 
 
 
