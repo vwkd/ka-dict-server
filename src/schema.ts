@@ -28,8 +28,6 @@ async function findEntriesResolver(_, { value, first, after }) {
   
   const edges = results.slice(startIndex, endIndex);
   
-  const count = edges.length;
-  
   // todo: what if edges is empty list?
   const startCursor = edges.at(1).cursor;
   const endCursor = edges.at(-1).cursor;
@@ -42,7 +40,6 @@ async function findEntriesResolver(_, { value, first, after }) {
     endCursor,
     hasPreviousPage,
     hasNextPage,
-    count,
   };
   
   return {
