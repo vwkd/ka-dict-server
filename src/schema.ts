@@ -59,8 +59,7 @@ function makeConnection(arr, key, amount, after, before) {
       hasPreviousPage = true;
     }
   } else if (after) {
-    // todo: correct?
-    if (allEdges.at(0)?.cursor != after) {
+    if (edges.at(0)?.cursor != after) {
       hasPreviousPage = true;
     }
   } else {
@@ -75,8 +74,7 @@ function makeConnection(arr, key, amount, after, before) {
       hasNextPage = true;
     }
   } else if (before) {
-    // todo: correct?
-    if (allEdges.at(-1)?.cursor != before) {
+    if (edges.at(-1)?.cursor != before) {
       hasNextPage = true;
     }
   } else {
