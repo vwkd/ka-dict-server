@@ -16,15 +16,15 @@ async function findEntriesResolver(_, { value, first, after, last, before }) {
 
   const arr = database.findEntries(value);
   
-  return makeConnection(arr, first, after, last, before);
+  return makeConnection(arr, "id", first, after, last, before);
 }
 
-function makeConnection(arr, first, after, last, before) {
+// todo: allow key array for deeper property, use getDeep utility
+function makeConnection(arr, key, first, after, last, before) {
   // TODO: assert arguments are provided, value is string, first / last are positive integers, after / before are string
   // TODO: assert only one pair is given
   // TODO: limit first / last to max value
-  // TODO: decode and encode cursors with base64 instead of just string number
-  const allEdges = arr.map(node => ({ node, cursor: node.id }));
+  const allEdges = arr.map(node => ({ node, cursor: btoa(node[key]) }));
   
   const edges = edgesToReturn(allEdges, first, after, last, before);
   
