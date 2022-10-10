@@ -13,17 +13,22 @@ async function entryResolver(_, { id }) {
 
 // defaults to start of list, assumes sorted list
 async function findEntriesResolver(_, { value, amount, after, before }) {
-
+  // TODO: assert arguments are provided, value is string, amount is positive integers, after / before is string
+  // TODO: limit amount to max value
+  
   const arr = database.findEntries(value);
   
   return makeConnection(arr, "id", amount, after, before);
 }
 
 // todo: allow key array for deeper property, use getDeep utility
+// beware: expects after, before, or neither, but never both
 function makeConnection(arr, key, amount, after, before) {
-  // TODO: assert arguments are provided, value is string, amount is positive integers, after / before is string
-  // TODO: assert only after or before is given
-  // TODO: limit amount to max value
+  // TODO: assert arguments are provided, arr is array, key is string, amount is positive integers, after / before is string
+  
+  if (after && before) {
+    throw new Error("Expected at most one of 'after' and 'before', but got both.");
+  }
   const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
   
   const edges = edgesToReturn(allEdges, amount, after, before);
@@ -54,16 +59,17 @@ function makeConnection(arr, key, amount, after, before) {
 function edgesToReturn(allEdges, amount, after, before) {
   let edges = applyCursorToEdges(allEdges, after, before);
   
-  if (after) {
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
     if (edges.length > amount) {
       edges = edges.slice(0, amount);
     }
-  }
-  
-  if (before) {
+  } else if (before) {
     if (edges.length > amount) {
       edges = edges.slice(-amount);
     }
+  } else {
+    // unreachable
   }
   
   return edges;
@@ -80,14 +86,14 @@ function applyCursorToEdges(allEdges, after, before) {
     if (afterIndex > -1) {
       edges = edges.slice(afterIndex + 1);
     }
-  }
-  
-  if (before) {
+  } else if (before) {
     const beforeIndex = allEdges.findIndex(({ cursor }) => cursor == before);
     
     if (beforeIndex > -1) {
       edges = edges.slice(0, beforeIndex);
     }
+  } else {
+    // if neither, no-op
   }
 
   return edges;
@@ -99,37 +105,34 @@ function hasPreviousPageFn(allEdges, amount, after, before) {
     
     if (edges.length > amount) {
       return true;
-    } else {
-      return false;
     }
-  }
-  
-  if (after) {
+  } else if (after) {
     // todo: correct?
     if (allEdges.at(0)?.cursor != after) {
       return true;
     }
+  } else {
+    // if neither default to after from beginning, no-op
   }
   
   return false;
 }
 
 function hasNextPageFn(allEdges, amount, after, before) {
-  if (after) {
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
     const edges = applyCursorToEdges(allEdges, after, before);
     
     if (edges.length > amount) {
       return true;
-    } else {
-      return false;
     }
-  }
-  
-  if (before) {
+  } else if (before) {
     // todo: correct?
     if (allEdges.at(-1)?.cursor != before) {
       return true;
     }
+  } else {
+    // unreachable
   }
   
   return false;
