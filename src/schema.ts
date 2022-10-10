@@ -92,7 +92,7 @@ function makeConnection(arr, key, amount, after, before) {
     // if neither default to after from beginning, no-op
   }
   
-  const hasNextPage = false;
+  let hasNextPage = false;
 
   // if neither default to after from beginning
   if (after || (!after && !before)) {
