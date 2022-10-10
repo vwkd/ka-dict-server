@@ -40,14 +40,13 @@ function makeConnection(arr, key, amount, after, before) {
     
     if (afterIndex > -1) {
       edges = edges.slice(afterIndex + 1);
-      countUntilPage = afterIndex;
+      countUntilPage = afterIndex + 1;
     }
   } else if (before) {
     const beforeIndex = edges.findIndex(({ cursor }) => cursor == before);
     
     if (beforeIndex > -1) {
       edges = edges.slice(0, beforeIndex);
-      countUntilPage = edges.length - amount;
     }
   } else {
     // if neither, no-op
@@ -91,6 +90,7 @@ function makeConnection(arr, key, amount, after, before) {
     }
   } else if (before) {
     if (edges.length > amount) {
+      countUntilPage = edges.length - amount;
       edges = edges.slice(-amount);
     }
   } else {
@@ -101,8 +101,8 @@ function makeConnection(arr, key, amount, after, before) {
   
   const totalPageCount = Math.ceil(totalCount / amount);
   
-  // don't count partial page at beginning if any
-  const pageNumber = Math.floor(countUntilPage / amount);
+  // beware: pages can be shifted since can start at any index, don't count possibly partial page at beginning as first page
+  const pageNumber = Math.floor(countUntilPage / amount) + 1;
   
   // todo: what if undefined?
   const startCursor = edges.at(0)?.cursor;
