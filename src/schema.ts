@@ -13,37 +13,36 @@ async function entryResolver(_, { id }) {
 
 // defaults to start of list, assumes sorted list
 async function findEntriesResolver(_, { value, first, after }) {
-  // TODO: assert arguments are provided and right type
-  // TODO: limit first and last, assert only one pair is given
+  // TODO: assert arguments are provided, value is string, rest are all positive integers
   // TODO: decode and encode cursors, e.g. base64
-  const resultsAll = database.findEntries(value);
+  // TODO: limit first and last to max value, assert only one pair is given
+  const results = database.findEntries(value).map((node, index) => ({ node, cursor: index }));
   
-  const startIndex = after + 1;
-  const endIndex = startIndex + first;
-  
-  const results = resultsAll.slice(startIndex, endIndex);
-  
-  const edges = results.map((node, cursor) => ({ node, cursor }));
-  
-  const totalCount = resultsAll.length;
+  const totalCount = results.length;
   
   const minIndex = 0;
   const maxIndex = totalCount - 1;
   
-  const endIndexNew = endIndex < maxIndex ? endIndex : maxIndex;
-  const startIndexNew = startIndex < endIndexNew ? startIndex : endIndexNew;
+  const startIndex = after + 1;
+  const endIndex = startIndex + first;
   
-  const hasPreviousPage = minIndex < startIndexNew;
-  const hasNextPage = endIndexNew < maxIndex;
+  const edges = results.slice(startIndex, endIndex);
   
-  const startCursor = startIndexNew;
-  const endCursor = endIndexNew;
+  const count = edges.length;
+  
+  // todo: what if edges is empty list?
+  const startCursor = edges.at(1).cursor;
+  const endCursor = edges.at(-1).cursor;
+  
+  const hasPreviousPage = minIndex < startIndex;
+  const hasNextPage = endIndex < maxIndex;
   
   const pageInfo = {
     startCursor,
     endCursor,
     hasPreviousPage,
     hasNextPage,
+    count,
   };
   
   return {
