@@ -87,7 +87,7 @@ function applyCursorToEdges(allEdges, after, before) {
       edges = edges.slice(afterIndex + 1);
     }
   } else if (before) {
-    const beforeIndex = allEdges.findIndex(({ cursor }) => cursor == before);
+    const beforeIndex = edges.findIndex(({ cursor }) => cursor == before);
     
     if (beforeIndex > -1) {
       edges = edges.slice(0, beforeIndex);
