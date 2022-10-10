@@ -16,15 +16,16 @@ async function findEntriesResolver(_, { value, first, after }) {
   // TODO: assert arguments are provided and right type
   // TODO: limit first and last, assert only one pair is given
   // TODO: decode and encode cursors, e.g. base64
+  const resultsAll = database.findEntries(value);
   
   const startIndex = after + 1;
   const endIndex = startIndex + first;
   
-  const results = database.findEntries(value);
+  const results = resultsAll.slice(startIndex, endIndex);
   
   const edges = results.map((node, cursor) => ({ node, cursor }));
   
-  const totalCount = results.length;
+  const totalCount = resultsAll.length;
   
   const minIndex = 0;
   const maxIndex = totalCount - 1;

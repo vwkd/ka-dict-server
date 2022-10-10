@@ -46,12 +46,12 @@ function entry(id) {
   return entries.find(entry => entry.id == id);
 }
 
-function findEntries(term, first, offset) {
+function findEntries(term) {
   const resultsFuse = fuse.search(term);
   
   const results = filterResults(resultsFuse);
   
-  return results.slice(offset, offset + first);
+  return results;
 }
 
 const database = {
