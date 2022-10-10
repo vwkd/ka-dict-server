@@ -3,6 +3,10 @@ import { database } from "./database.ts"
 
 // --------- RESOLVER ---------
 
+let $total = undefined;
+let $first = undefined;
+let $offset = undefined;
+
 async function entryResolver(_, { id }) {
 
   // TODO: assert ID is provided, is ID type
@@ -16,7 +20,21 @@ async function findEntriesResolver(_, { value, first, offset }) {
 
   // TODO: assert term provided, amount is string
 
-  return database.findEntries(value, first, offset);
+  const result = database.findEntries(value, first, offset);
+  
+  $total = result.length;
+  $first = first;
+  $offset = offset;
+  
+  return result;
+}
+
+async function findEntriesResolverMeta() {
+  return {
+    total: $total,
+    first: $first,
+    offset: $offset,
+  };
 }
 
 // --------- SCHEMA ---------
@@ -187,6 +205,21 @@ const entryType = new GraphQLObjectType({
   }
 });
 
+const findEntriesTypeMeta = new GraphQLObjectType({
+  name: "_findEntries",
+  fields: {
+    length: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    first: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    offset: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+  }
+});
+
 const queryType = new GraphQLObjectType({
   name: "Query",
   fields: {
@@ -213,6 +246,10 @@ const queryType = new GraphQLObjectType({
         },
       },
       resolve: findEntriesResolver,
+    },
+    _findEntries: {
+      type: findEntriesTypeMeta,
+      resolve: findEntriesResolverMeta,
     },
   },
 });
