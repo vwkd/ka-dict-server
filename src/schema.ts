@@ -12,28 +12,30 @@ async function entryResolver(_, { id }) {
 }
 
 // defaults to start of list, assumes sorted list
-async function findEntriesResolver(_, { value, first, after }) {
-  // TODO: assert arguments are provided, value is string, rest are all positive integers
-  // TODO: decode and encode cursors, e.g. base64
-  // TODO: limit first and last to max value, assert only one pair is given
-  const results = database.findEntries(value).map((node, index) => ({ node, cursor: index }));
+async function findEntriesResolver(_, { value, first, after, last, before }) {
+
+  const arr = database.findEntries(value);
   
-  const totalCount = results.length;
+  return makeConnection(arr, first, after, last, before);
+}
+
+function makeConnection(arr, first, after, last, before) {
+  // TODO: assert arguments are provided, value is string, first / last are positive integers, after / before are string
+  // TODO: assert only one pair is given
+  // TODO: limit first / last to max value
+  // TODO: decode and encode cursors with base64 instead of just string number
+  const allEdges = arr.map(node => ({ node, cursor: node.id }));
   
-  const minIndex = 0;
-  const maxIndex = totalCount - 1;
+  const edges = edgesToReturn(allEdges, first, after, last, before);
   
-  const startIndex = after + 1;
-  const endIndex = startIndex + first;
+  const totalCount = allEdges.length;
   
-  const edges = results.slice(startIndex, endIndex);
+  // todo: what if undefined?
+  const startCursor = edges.at(0)?.cursor;
+  const endCursor = edges.at(-1)?.cursor;
   
-  // todo: what if edges is empty list?
-  const startCursor = edges.at(1).cursor;
-  const endCursor = edges.at(-1).cursor;
-  
-  const hasPreviousPage = minIndex < startIndex;
-  const hasNextPage = endIndex < maxIndex;
+  const hasPreviousPage = hasPreviousPageFn(allEdges, first, after, last, before);
+  const hasNextPage = hasNextPageFn(allEdges, first, after, last, before);
   
   const pageInfo = {
     startCursor,
@@ -47,6 +49,90 @@ async function findEntriesResolver(_, { value, first, after }) {
     totalCount,
     pageInfo,
   };
+}
+
+function edgesToReturn(allEdges, first, after, last, before) {
+  let edges = applyCursorToEdges(allEdges, after, before);
+  
+  if (first) {
+    if (edges.length > first) {
+      edges = edges.slice(0, first);
+    }
+  }
+  
+  if (last) {
+    if (edges.length > last) {
+      edges = edges.slice(-last);
+    }
+  }
+  
+  return edges;
+}
+
+
+function applyCursorToEdges(allEdges, after, before) {
+
+  let edges = allEdges;
+  
+  if (after) {
+    const afterIndex = edgesSlice.findIndex(({ cursor }) => cursor == after);
+    
+    if (afterIndex > -1) {
+      edgesSlice = edgesSlice.slice(afterIndex + 1);
+    }
+  }
+  
+  if (before) {
+    const beforeIndex = allEdges.findIndex(({ cursor }) => cursor == before);
+    
+    if (beforeIndex > -1) {
+      edgesSlice = edgesSlice.slice(0, beforeIndex);
+    }
+  }
+
+  return edges;
+}
+
+function hasPreviousPageFn(allEdges, first, after, last, before) {
+  if (last) {
+    const edges = applyCursorToEdges(allEdges, after, before);
+    
+    if (edges.length > last) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  if (after) {
+    // todo: correct?
+    if (allEdges.at(0)?.cursor != after) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+function hasNextPageFn(allEdges, first, after, last, before) {
+  if (first) {
+    const edges = applyCursorToEdges(allEdges, after, before);
+    
+    if (edges.length > first) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  if (before) {
+    // todo: correct?
+    if (allEdges.at(-1)?.cursor != before) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 // --------- SCHEMA ---------
