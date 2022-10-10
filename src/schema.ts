@@ -33,17 +33,21 @@ function makeConnection(arr, key, amount, after, before) {
   
   let edges = allEdges;
   
+  let itemsBefore = 0;
+  
   if (after) {
     const afterIndex = edges.findIndex(({ cursor }) => cursor == after);
     
     if (afterIndex > -1) {
       edges = edges.slice(afterIndex + 1);
+      itemsBefore = afterIndex;
     }
   } else if (before) {
     const beforeIndex = edges.findIndex(({ cursor }) => cursor == before);
     
     if (beforeIndex > -1) {
       edges = edges.slice(0, beforeIndex);
+      itemsBefore = edges.length - amount;
     }
   } else {
     // if neither, no-op
@@ -63,6 +67,11 @@ function makeConnection(arr, key, amount, after, before) {
   }
   
   const totalCount = allEdges.length;
+  
+  const totalPageCount = Math.ceil(totalCount / amount);
+  
+  // don't count partial page at beginning if any
+  const pageNumber = Math.floor(itemsBefore / amount);
   
   // todo: what if undefined?
   const startCursor = edges.at(0)?.cursor;
@@ -104,11 +113,13 @@ function makeConnection(arr, key, amount, after, before) {
     endCursor,
     hasPreviousPage,
     hasNextPage,
+    pageNumber,
   };
   
   return {
     edges,
     totalCount,
+    totalPageCount,
     pageInfo,
   };
 }
@@ -131,6 +142,9 @@ const pageInfoType = new GraphQLObjectType({
     },
     hasNextPage: {
       type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    pageNumber: {
+      type: new GraphQLNonNull(GraphQLInt),
     },
   }
 });
@@ -318,6 +332,9 @@ const entryConnectionType = new GraphQLObjectType({
       type: new GraphQLNonNull(new GraphQLList(entryEdgeType)),
     },
     totalCount: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    totalPageCount: {
       type: new GraphQLNonNull(GraphQLInt),
     },
     pageInfo: {
