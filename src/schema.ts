@@ -12,21 +12,21 @@ async function entryResolver(_, { id }) {
 }
 
 // defaults to start of list, assumes sorted list
-async function findEntriesResolver(_, { value, first, after, last, before }) {
+async function findEntriesResolver(_, { value, amount, after, before }) {
 
   const arr = database.findEntries(value);
   
-  return makeConnection(arr, "id", first, after, last, before);
+  return makeConnection(arr, "id", amount, after, before);
 }
 
 // todo: allow key array for deeper property, use getDeep utility
-function makeConnection(arr, key, first, after, last, before) {
-  // TODO: assert arguments are provided, value is string, first / last are positive integers, after / before are string
-  // TODO: assert only one pair is given
-  // TODO: limit first / last to max value
+function makeConnection(arr, key, amount, after, before) {
+  // TODO: assert arguments are provided, value is string, amount is positive integers, after / before is string
+  // TODO: assert only after or before is given
+  // TODO: limit amount to max value
   const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
   
-  const edges = edgesToReturn(allEdges, first, after, last, before);
+  const edges = edgesToReturn(allEdges, amount, after, before);
   
   const totalCount = allEdges.length;
   
@@ -34,8 +34,8 @@ function makeConnection(arr, key, first, after, last, before) {
   const startCursor = edges.at(0)?.cursor;
   const endCursor = edges.at(-1)?.cursor;
   
-  const hasPreviousPage = hasPreviousPageFn(allEdges, first, after, last, before);
-  const hasNextPage = hasNextPageFn(allEdges, first, after, last, before);
+  const hasPreviousPage = hasPreviousPageFn(allEdges, amount, after, before);
+  const hasNextPage = hasNextPageFn(allEdges, amount, after, before);
   
   const pageInfo = {
     startCursor,
@@ -51,18 +51,18 @@ function makeConnection(arr, key, first, after, last, before) {
   };
 }
 
-function edgesToReturn(allEdges, first, after, last, before) {
+function edgesToReturn(allEdges, amount, after, before) {
   let edges = applyCursorToEdges(allEdges, after, before);
   
-  if (first) {
-    if (edges.length > first) {
-      edges = edges.slice(0, first);
+  if (after) {
+    if (edges.length > amount) {
+      edges = edges.slice(0, amount);
     }
   }
   
-  if (last) {
-    if (edges.length > last) {
-      edges = edges.slice(-last);
+  if (before) {
+    if (edges.length > amount) {
+      edges = edges.slice(-amount);
     }
   }
   
@@ -93,11 +93,11 @@ function applyCursorToEdges(allEdges, after, before) {
   return edges;
 }
 
-function hasPreviousPageFn(allEdges, first, after, last, before) {
-  if (last) {
+function hasPreviousPageFn(allEdges, amount, after, before) {
+  if (before) {
     const edges = applyCursorToEdges(allEdges, after, before);
     
-    if (edges.length > last) {
+    if (edges.length > amount) {
       return true;
     } else {
       return false;
@@ -114,11 +114,11 @@ function hasPreviousPageFn(allEdges, first, after, last, before) {
   return false;
 }
 
-function hasNextPageFn(allEdges, first, after, last, before) {
-  if (first) {
+function hasNextPageFn(allEdges, amount, after, before) {
+  if (after) {
     const edges = applyCursorToEdges(allEdges, after, before);
     
-    if (edges.length > first) {
+    if (edges.length > amount) {
       return true;
     } else {
       return false;
@@ -366,14 +366,11 @@ const queryType = new GraphQLObjectType({
         value: {
           type: new GraphQLNonNull(GraphQLString),
         },
-        first: {
-          type: GraphQLInt,
+        amount: {
+          type: new GraphQLNonNull(GraphQLInt),
         },
         after: {
           type: GraphQLID,
-        },
-        last: {
-          type: GraphQLInt,
         },
         before: {
           type: GraphQLID,
