@@ -31,53 +31,6 @@ function makeConnection(arr, key, amount, after, before) {
   }
   const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
   
-  const edges = edgesToReturn(allEdges, amount, after, before);
-  
-  const totalCount = allEdges.length;
-  
-  // todo: what if undefined?
-  const startCursor = edges.at(0)?.cursor;
-  const endCursor = edges.at(-1)?.cursor;
-  
-  const hasPreviousPage = hasPreviousPageFn(allEdges, amount, after, before);
-  const hasNextPage = hasNextPageFn(allEdges, amount, after, before);
-  
-  const pageInfo = {
-    startCursor,
-    endCursor,
-    hasPreviousPage,
-    hasNextPage,
-  };
-  
-  return {
-    edges,
-    totalCount,
-    pageInfo,
-  };
-}
-
-function edgesToReturn(allEdges, amount, after, before) {
-  let edges = applyCursorToEdges(allEdges, after, before);
-  
-  // if neither default to after from beginning
-  if (after || (!after && !before)) {
-    if (edges.length > amount) {
-      edges = edges.slice(0, amount);
-    }
-  } else if (before) {
-    if (edges.length > amount) {
-      edges = edges.slice(-amount);
-    }
-  } else {
-    // unreachable
-  }
-  
-  return edges;
-}
-
-
-function applyCursorToEdges(allEdges, after, before) {
-
   let edges = allEdges;
   
   if (after) {
@@ -95,47 +48,69 @@ function applyCursorToEdges(allEdges, after, before) {
   } else {
     // if neither, no-op
   }
-
-  return edges;
-}
-
-function hasPreviousPageFn(allEdges, amount, after, before) {
-  if (before) {
-    const edges = applyCursorToEdges(allEdges, after, before);
-    
-    if (edges.length > amount) {
-      return true;
-    }
-  } else if (after) {
-    // todo: correct?
-    if (allEdges.at(0)?.cursor != after) {
-      return true;
-    }
-  } else {
-    // if neither default to after from beginning, no-op
-  }
   
-  return false;
-}
-
-function hasNextPageFn(allEdges, amount, after, before) {
   // if neither default to after from beginning
   if (after || (!after && !before)) {
-    const edges = applyCursorToEdges(allEdges, after, before);
-    
     if (edges.length > amount) {
-      return true;
+      edges = edges.slice(0, amount);
     }
   } else if (before) {
-    // todo: correct?
-    if (allEdges.at(-1)?.cursor != before) {
-      return true;
+    if (edges.length > amount) {
+      edges = edges.slice(-amount);
     }
   } else {
     // unreachable
   }
   
-  return false;
+  const totalCount = allEdges.length;
+  
+  // todo: what if undefined?
+  const startCursor = edges.at(0)?.cursor;
+  const endCursor = edges.at(-1)?.cursor;
+  
+  let hasPreviousPage = false;
+
+  if (before) {
+    if (edges.length > amount) {
+      hasPreviousPage = true;
+    }
+  } else if (after) {
+    // todo: correct?
+    if (allEdges.at(0)?.cursor != after) {
+      hasPreviousPage = true;
+    }
+  } else {
+    // if neither default to after from beginning, no-op
+  }
+  
+  const hasNextPage = false;
+
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
+    if (edges.length > amount) {
+      hasNextPage = true;
+    }
+  } else if (before) {
+    // todo: correct?
+    if (allEdges.at(-1)?.cursor != before) {
+      hasNextPage = true;
+    }
+  } else {
+    // unreachable
+  }
+  
+  const pageInfo = {
+    startCursor,
+    endCursor,
+    hasPreviousPage,
+    hasNextPage,
+  };
+  
+  return {
+    edges,
+    totalCount,
+    pageInfo,
+  };
 }
 
 // --------- SCHEMA ---------
