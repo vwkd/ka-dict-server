@@ -367,16 +367,16 @@ const queryType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLString),
         },
         first: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: GraphQLInt,
         },
         after: {
-          type: new GraphQLNonNull(GraphQLID),
+          type: GraphQLID,
         },
         last: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: GraphQLInt,
         },
         before: {
-          type: new GraphQLNonNull(GraphQLID),
+          type: GraphQLID,
         },
       },
       resolve: findEntriesResolver,
