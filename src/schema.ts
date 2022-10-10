@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean } from "./deps.ts";
+import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean, encode } from "./deps.ts";
 import { database } from "./database.ts"
 
 // --------- RESOLVER ---------
@@ -24,7 +24,7 @@ function makeConnection(arr, key, first, after, last, before) {
   // TODO: assert arguments are provided, value is string, first / last are positive integers, after / before are string
   // TODO: assert only one pair is given
   // TODO: limit first / last to max value
-  const allEdges = arr.map(node => ({ node, cursor: btoa(node[key]) }));
+  const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
   
   const edges = edgesToReturn(allEdges, first, after, last, before);
   
