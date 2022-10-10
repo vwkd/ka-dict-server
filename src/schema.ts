@@ -53,30 +53,6 @@ function makeConnection(arr, key, amount, after, before) {
     // if neither, no-op
   }
   
-  // if neither default to after from beginning
-  if (after || (!after && !before)) {
-    if (edges.length > amount) {
-      edges = edges.slice(0, amount);
-    }
-  } else if (before) {
-    if (edges.length > amount) {
-      edges = edges.slice(-amount);
-    }
-  } else {
-    // unreachable
-  }
-  
-  const totalCount = allEdges.length;
-  
-  const totalPageCount = Math.ceil(totalCount / amount);
-  
-  // don't count partial page at beginning if any
-  const pageNumber = Math.floor(countUntilPage / amount);
-  
-  // todo: what if undefined?
-  const startCursor = edges.at(0)?.cursor;
-  const endCursor = edges.at(-1)?.cursor;
-  
   let hasPreviousPage = false;
 
   if (before) {
@@ -107,6 +83,30 @@ function makeConnection(arr, key, amount, after, before) {
   } else {
     // unreachable
   }
+  
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
+    if (edges.length > amount) {
+      edges = edges.slice(0, amount);
+    }
+  } else if (before) {
+    if (edges.length > amount) {
+      edges = edges.slice(-amount);
+    }
+  } else {
+    // unreachable
+  }
+  
+  const totalCount = allEdges.length;
+  
+  const totalPageCount = Math.ceil(totalCount / amount);
+  
+  // don't count partial page at beginning if any
+  const pageNumber = Math.floor(countUntilPage / amount);
+  
+  // todo: what if undefined?
+  const startCursor = edges.at(0)?.cursor;
+  const endCursor = edges.at(-1)?.cursor;
   
   const pageInfo = {
     startCursor,
