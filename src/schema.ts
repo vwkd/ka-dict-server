@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType } from "./deps.ts";
+import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean, encode } from "./deps.ts";
 import { database } from "./database.ts"
 
 // --------- RESOLVER ---------
@@ -12,16 +12,140 @@ async function entryResolver(_, { id }) {
 }
 
 // defaults to start of list, assumes sorted list
-async function findEntriesResolver(_, { value, first, offset }) {
+async function findEntriesResolver(_, { value, amount, after, before }) {
+  // TODO: assert arguments are provided, value is string, amount is positive integers, after / before is string
+  // TODO: limit amount to max value
+  
+  const arr = database.findEntries(value);
+  
+  return makeConnection(arr, "id", amount, after, before);
+}
 
-  // TODO: assert term provided, amount is string
+// todo: allow key array for deeper property, use getDeep utility
+// beware: expects after, before, or neither, but never both
+function makeConnection(arr, key, amount, after, before) {
+  // TODO: assert arguments are provided, arr is array, key is string, amount is positive integers, after / before is string
+  
+  if (after && before) {
+    throw new Error("Expected at most one of 'after' and 'before', but got both.");
+  }
+  const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
+  
+  let edges = allEdges;
+  
+  let countUntilPage = 0;
+  
+  if (after) {
+    const afterIndex = edges.findIndex(({ cursor }) => cursor == after);
+    
+    if (afterIndex > -1) {
+      edges = edges.slice(afterIndex + 1);
+      countUntilPage = afterIndex + 1;
+    }
+  } else if (before) {
+    const beforeIndex = edges.findIndex(({ cursor }) => cursor == before);
+    
+    if (beforeIndex > -1) {
+      edges = edges.slice(0, beforeIndex);
+    }
+  } else {
+    // if neither, no-op
+  }
+  
+  let hasPreviousPage = false;
 
-  return database.findEntries(value, first, offset);
+  if (before) {
+    if (edges.length > amount) {
+      hasPreviousPage = true;
+    }
+  } else if (after) {
+    if (edges.at(0)?.cursor != after) {
+      hasPreviousPage = true;
+    }
+  } else {
+    // if neither default to after from beginning, no-op
+  }
+  
+  let hasNextPage = false;
+
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
+    if (edges.length > amount) {
+      hasNextPage = true;
+    }
+  } else if (before) {
+    if (edges.at(-1)?.cursor != before) {
+      hasNextPage = true;
+    }
+  } else {
+    // unreachable
+  }
+  
+  // if neither default to after from beginning
+  if (after || (!after && !before)) {
+    if (edges.length > amount) {
+      edges = edges.slice(0, amount);
+    }
+  } else if (before) {
+    if (edges.length > amount) {
+      countUntilPage = edges.length - amount;
+      edges = edges.slice(-amount);
+    }
+  } else {
+    // unreachable
+  }
+  
+  const totalCount = allEdges.length;
+  
+  const totalPageCount = Math.ceil(totalCount / amount);
+  
+  // beware: pages can be shifted since can start at any index, don't count possibly partial page at beginning as first page
+  const pageNumber = Math.floor(countUntilPage / amount) + 1;
+  
+  // todo: what if undefined?
+  const startCursor = edges.at(0)?.cursor;
+  const endCursor = edges.at(-1)?.cursor;
+  
+  const pageInfo = {
+    startCursor,
+    endCursor,
+    hasPreviousPage,
+    hasNextPage,
+    pageNumber,
+  };
+  
+  return {
+    edges,
+    totalCount,
+    totalPageCount,
+    pageInfo,
+  };
 }
 
 // --------- SCHEMA ---------
 
 // BEWARE: definitions must be in order from leaf types all the way up to root type
+
+const pageInfoType = new GraphQLObjectType({
+  name: "PageInfo",
+  fields: {
+    startCursor: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
+    endCursor: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
+    hasPreviousPage: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    hasNextPage: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    pageNumber: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+  }
+});
 
 const kindType = new GraphQLEnumType({
   name: "Kind",
@@ -187,6 +311,36 @@ const entryType = new GraphQLObjectType({
   }
 });
 
+const entryEdgeType = new GraphQLObjectType({
+  name: "EntryEdge",
+  fields: {
+    node: {
+      type: new GraphQLNonNull(entryType),
+    },
+    cursor: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
+  }
+});
+
+const entryConnectionType = new GraphQLObjectType({
+  name: "EntryConnection",
+  fields: {
+    edges: {
+      type: new GraphQLNonNull(new GraphQLList(entryEdgeType)),
+    },
+    totalCount: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    totalPageCount: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    pageInfo: {
+      type: new GraphQLNonNull(pageInfoType),
+    },
+  }
+});
+
 const queryType = new GraphQLObjectType({
   name: "Query",
   fields: {
@@ -200,16 +354,19 @@ const queryType = new GraphQLObjectType({
       resolve: entryResolver,
     },
     findEntries: {
-      type: new GraphQLNonNull(new GraphQLList(entryType)),
+      type: new GraphQLNonNull(entryConnectionType),
       args: {
         value: {
           type: new GraphQLNonNull(GraphQLString),
         },
-        first: {
+        amount: {
           type: new GraphQLNonNull(GraphQLInt),
         },
-        offset: {
-          type: new GraphQLNonNull(GraphQLInt),
+        after: {
+          type: GraphQLID,
+        },
+        before: {
+          type: GraphQLID,
         },
       },
       resolve: findEntriesResolver,
