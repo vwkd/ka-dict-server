@@ -1,6 +1,6 @@
 type Query {
   entry(id: ID!): Entry
-  findEntries(value: String!, first: Int!, offset: Int!): [Entry]!
+  findEntries(value: String!, amount: Int!, after: ID, before: ID): EntryConnection!
 }
 
 type Entry {
@@ -94,4 +94,24 @@ type Field {
 type Element {
   value: String!
   category: [String!]!
+}
+
+type EntryConnection {
+  edges: [EntryEdge]!
+  totalCount: Int!
+  totalPageCount: Int!
+  pageInfo: PageInfo!
+}
+
+type EntryEdge {
+  node: Entry!
+  cursor: ID!
+}
+
+type PageInfo {
+  startCursor: ID!
+  endCursor: ID!
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  pageNumber: Int!
 }
