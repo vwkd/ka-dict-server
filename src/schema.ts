@@ -87,7 +87,6 @@ function makeConnection(arr, key, amount, after, before) {
 
   const pageNumber = Math.ceil(countBeforeStart / amount) + (totalCount > 0 ? 1 : 0);
   
-  // todo: what if undefined?
   const startCursor = edges.at(0)?.cursor;
   const endCursor = edges.at(-1)?.cursor;
   
@@ -115,10 +114,10 @@ const pageInfoType = new GraphQLObjectType({
   name: "PageInfo",
   fields: {
     startCursor: {
-      type: new GraphQLNonNull(GraphQLID),
+      type: GraphQLID,
     },
     endCursor: {
-      type: new GraphQLNonNull(GraphQLID),
+      type: GraphQLID,
     },
     hasPreviousPage: {
       type: new GraphQLNonNull(GraphQLBoolean),
