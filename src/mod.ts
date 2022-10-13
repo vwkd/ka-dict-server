@@ -1,5 +1,4 @@
-import { serve } from "./deps.ts";
-import { graphql } from "./deps.ts";
+import { serve, graphql } from "./deps.ts";
 import { schema } from "./schema.ts";
 
 async function handleRequest(request: Request) {
@@ -26,22 +25,28 @@ async function handleRequest(request: Request) {
       
       const res = await graphql({schema, source: req.query, variableValues: req.variables, operationName: req.operationName});
   
-      return Response.json(res);
+      const response = Response.json(res);
+      
+      return response;
   
     } else {
   
       const error = { message: "Invalid method." };
       
-      return Response.json(error, { status: 405 });
-  
+      const response = Response.json(error, { status: 405 });
+
+      return response;
+      
     }
 
   } else {
 
     const error = { message: "Invalid path." };
     
-    return Response.json(error, { status: 404 });
-  
+    const response = Response.json(error, { status: 404 });
+    
+    return response;
+    
   }
 
 }
