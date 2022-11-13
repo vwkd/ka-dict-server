@@ -1,14 +1,24 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean } from "$graphql";
+import {
+  GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  GraphQLUnionType,
+} from "$graphql";
 import { encode } from "$std/encoding/base64url.ts";
-import { database } from "./database.ts"
+import { database } from "./database.ts";
 
 // --------- RESOLVER ---------
 
 function entryResolver(_, { id }) {
-
   // TODO: assert ID is provided, is ID type
   // TODO: error handling entry with id does not exist
-  
+
   return database.entry(id);
 }
 
@@ -16,11 +26,11 @@ function entryResolver(_, { id }) {
 function findEntriesResolver(_, { value, amount, after, before }) {
   // TODO: assert arguments are provided, value is string, amount is positive integer, after / before is string
   // TODO: limit amount to max value
-  
+
   const arr = database.findEntries(value);
-  
+
   const connection = makeConnection(arr, "id", amount, after, before);
-  
+
   return connection;
 }
 
@@ -29,25 +39,30 @@ function findEntriesResolver(_, { value, amount, after, before }) {
 // if neither, defaults to after from beginning
 function makeConnection(arr, key, amount, after, before) {
   // TODO: assert arguments are provided, arr is array, key is string, amount is positive integers, after / before is string
-  
+
   if (after && before) {
-    throw new Error("Expected at most one of 'after' and 'before', but got both.");
+    throw new Error(
+      "Expected at most one of 'after' and 'before', but got both.",
+    );
   }
-  const allEdges = arr.map(node => ({ node, cursor: encode(`${node[key]}`) }));
-  
+  const allEdges = arr.map((node) => ({
+    node,
+    cursor: encode(`${node[key]}`),
+  }));
+
   const totalCount = allEdges.length;
-  
+
   let edges = allEdges;
-  
+
   let hasPreviousPage = false;
   let hasNextPage = false;
 
   let countBeforeStart = 0;
   let countAfterEnd = 0;
-  
+
   if (after) {
     const afterIndex = edges.findIndex(({ cursor }) => cursor == after);
-    
+
     if (afterIndex > -1) {
       edges = edges.slice(afterIndex + 1);
       hasPreviousPage = true;
@@ -55,7 +70,7 @@ function makeConnection(arr, key, amount, after, before) {
     }
   } else if (before) {
     const beforeIndex = edges.findIndex(({ cursor }) => cursor == before);
-    
+
     if (beforeIndex > -1) {
       countAfterEnd = edges.length - beforeIndex;
       edges = edges.slice(0, beforeIndex);
@@ -64,7 +79,7 @@ function makeConnection(arr, key, amount, after, before) {
   } else {
     // if neither, no-op
   }
-  
+
   // if neither default to after from beginning
   if (after || (!after && !before)) {
     if (edges.length > amount) {
@@ -81,16 +96,18 @@ function makeConnection(arr, key, amount, after, before) {
   } else {
     // unreachable
   }
-  
+
   // beware: pages can be shifted since can start at an index that is not a multiple of the amount
   // note: simply `Math.ceil(totalCount / amount)` doesn't work
-  const totalPageCount = Math.ceil(countBeforeStart / amount) + (totalCount > 0 ? 1 : 0) + Math.ceil(countAfterEnd / amount);
+  const totalPageCount = Math.ceil(countBeforeStart / amount) +
+    (totalCount > 0 ? 1 : 0) + Math.ceil(countAfterEnd / amount);
 
-  const pageNumber = Math.ceil(countBeforeStart / amount) + (totalCount > 0 ? 1 : 0);
-  
+  const pageNumber = Math.ceil(countBeforeStart / amount) +
+    (totalCount > 0 ? 1 : 0);
+
   const startCursor = edges.at(0)?.cursor;
   const endCursor = edges.at(-1)?.cursor;
-  
+
   const pageInfo = {
     startCursor,
     endCursor,
@@ -98,7 +115,7 @@ function makeConnection(arr, key, amount, after, before) {
     hasNextPage,
     pageNumber,
   };
-  
+
   return {
     edges,
     totalCount,
@@ -129,7 +146,7 @@ const pageInfoType = new GraphQLObjectType({
     pageNumber: {
       type: new GraphQLNonNull(GraphQLInt),
     },
-  }
+  },
 });
 
 const kindType = new GraphQLEnumType({
@@ -204,7 +221,7 @@ const sourceType = new GraphQLObjectType({
     meaning: {
       type: GraphQLInt,
     },
-  }
+  },
 });
 
 const elementType = new GraphQLObjectType({
@@ -214,7 +231,9 @@ const elementType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
     },
     category: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(GraphQLString)),
+      ),
     },
   },
 });
@@ -223,7 +242,9 @@ const fieldType = new GraphQLObjectType({
   name: "Field",
   fields: {
     value: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(elementType))),
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(elementType)),
+      ),
     },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
@@ -249,7 +270,7 @@ const referenceType = new GraphQLObjectType({
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
     },
-  }
+  },
 });
 
 // beware: can't have union of non-object types
@@ -273,12 +294,14 @@ const targetType = new GraphQLObjectType({
   name: "Target",
   fields: {
     value: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(definitionType))),
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(definitionType)),
+      ),
     },
     meaning: {
       type: GraphQLInt,
     },
-  }
+  },
 });
 
 const entryType = new GraphQLObjectType({
@@ -293,7 +316,7 @@ const entryType = new GraphQLObjectType({
     target: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(targetType))),
     },
-  }
+  },
 });
 
 const entryEdgeType = new GraphQLObjectType({
@@ -305,7 +328,7 @@ const entryEdgeType = new GraphQLObjectType({
     cursor: {
       type: new GraphQLNonNull(GraphQLID),
     },
-  }
+  },
 });
 
 const entryConnectionType = new GraphQLObjectType({
@@ -323,7 +346,7 @@ const entryConnectionType = new GraphQLObjectType({
     pageInfo: {
       type: new GraphQLNonNull(pageInfoType),
     },
-  }
+  },
 });
 
 const queryType = new GraphQLObjectType({
