@@ -1,4 +1,20 @@
-import { entries, Fuse, fuse_options, fuse_index, deepMerge, deepFilter } from "./deps.ts";
+import Fuse from "$fuse";
+import entries from "$entries" assert { type: "json" };
+import { deepMerge } from "$code-web-utilities/deep_merge.ts";
+import { deepFilter } from "$code-web-utilities/deep_filter.ts";
+
+const fuse_options = {
+  threshold: 0,
+  ignoreLocation: true,
+  includeMatches: true,
+  keys: [
+    "source.value",
+    "target.value.source.value",
+    "target.value.value.value",
+  ],
+}
+
+const fuse_index = Fuse.createIndex(fuse_options.keys, entries);
 
 const fuse = new Fuse(entries, fuse_options, Fuse.parseIndex(fuse_index));
 

@@ -1,4 +1,4 @@
-import { printSchema } from "../src/deps.ts";
+import { printSchema } from "$graphql";
 import { schema } from "../src/schema.ts";
 
 const schemaString = printSchema(schema);

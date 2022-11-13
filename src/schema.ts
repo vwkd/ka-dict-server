@@ -1,4 +1,5 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean, encode } from "./deps.ts";
+import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLUnionType, GraphQLBoolean } from "$graphql";
+import { encode } from "$std/encoding/base64url.ts";
 import { database } from "./database.ts"
 
 // --------- RESOLVER ---------
