@@ -1,7 +1,7 @@
 {
   "importMap": "./import_map.json",
   "tasks": {
-    "start": "deno run --allow-net src/mod.ts",
+    "start": "deno run --allow-read --allow-net src/mod.ts",
     "schema": "deno run --allow-write scripts/writeSchema.ts"
   }
 }

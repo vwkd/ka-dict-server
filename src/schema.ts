@@ -15,6 +15,7 @@ import { database } from "./database.ts";
 
 // --------- RESOLVER ---------
 
+/*
 function entryResolver(_, { id }) {
   // TODO: assert ID is provided, is ID type
   // TODO: error handling entry with id does not exist
@@ -123,11 +124,13 @@ function makeConnection(arr, key, amount, after, before) {
     pageInfo,
   };
 }
+*/
 
 // --------- SCHEMA ---------
 
 // BEWARE: definitions must be in order from leaf types all the way up to root type
 
+/*
 const pageInfoType = new GraphQLObjectType({
   name: "PageInfo",
   fields: {
@@ -148,6 +151,7 @@ const pageInfoType = new GraphQLObjectType({
     },
   },
 });
+*/
 
 const kindType = new GraphQLEnumType({
   name: "Kind",
@@ -158,8 +162,8 @@ const kindType = new GraphQLEnumType({
   },
 });
 
-const tagType = new GraphQLEnumType({
-  name: "Tag",
+const tagValueType = new GraphQLEnumType({
+  name: "TagValue",
   values: {
     "BIOL": {},
     "BOT": {},
@@ -212,14 +216,38 @@ const tagType = new GraphQLEnumType({
   },
 });
 
-const sourceType = new GraphQLObjectType({
-  name: "Source",
+const tagType = new GraphQLObjectType({
+  name: "Tag",
   fields: {
+    // index: {
+    //   type: new GraphQLNonNull(GraphQLInt),
+    // },
+    value: {
+      type: new GraphQLNonNull(tagValueType),
+    },
+  },
+});
+
+const categoryType = new GraphQLObjectType({
+  name: "Category",
+  fields: {
+    // index: {
+    //   type: new GraphQLNonNull(GraphQLInt),
+    // },
     value: {
       type: new GraphQLNonNull(GraphQLString),
     },
+  },
+});
+
+const sourceType = new GraphQLObjectType({
+  name: "Source",
+  fields: {
     meaning: {
       type: GraphQLInt,
+    },
+    value: {
+      type: new GraphQLNonNull(GraphQLString),
     },
   },
 });
@@ -227,13 +255,16 @@ const sourceType = new GraphQLObjectType({
 const elementType = new GraphQLObjectType({
   name: "Element",
   fields: {
+    index: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
     value: {
       type: new GraphQLNonNull(GraphQLString),
     },
+    // todo: rename to categories
     category: {
-      type: new GraphQLNonNull(
-        new GraphQLList(new GraphQLNonNull(GraphQLString)),
-      ),
+      type: new GraphQLNonNull(new GraphQLList(categoryType)),
+      resolve: ({ id }) => database.getCategories(id),  
     },
   },
 });
@@ -245,9 +276,14 @@ const fieldType = new GraphQLObjectType({
       type: new GraphQLNonNull(
         new GraphQLList(new GraphQLNonNull(elementType)),
       ),
+      resolve: ({ id }) => database.getElements(id),
+    },
+    index: {
+      type: new GraphQLNonNull(GraphQLInt),
     },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
+      resolve: ({ _targetId }) => database.getTags(_targetId),  
     },
   },
 });
@@ -255,20 +291,18 @@ const fieldType = new GraphQLObjectType({
 const referenceType = new GraphQLObjectType({
   name: "Reference",
   fields: {
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-    },
     source: {
       type: new GraphQLNonNull(sourceType),
-    },
-    meaning: {
-      type: GraphQLInt,
     },
     kind: {
       type: new GraphQLNonNull(kindType),
     },
+    meaning: {
+      type: GraphQLInt,
+    },
     tags: {
       type: new GraphQLNonNull(new GraphQLList(tagType)),
+      resolve: ({ _targetId }) => database.getTags(_targetId),  
     },
   },
 });
@@ -281,7 +315,7 @@ const definitionType = new GraphQLUnionType({
     fieldType,
   ],
   resolveType(value) {
-    if (value.id) {
+    if (value.kind) {
       return "Reference";
     }
     if (value.value) {
@@ -297,6 +331,7 @@ const targetType = new GraphQLObjectType({
       type: new GraphQLNonNull(
         new GraphQLList(new GraphQLNonNull(definitionType)),
       ),
+      resolve: ({ id }) => database.getDefinitions(id),
     },
     meaning: {
       type: GraphQLInt,
@@ -312,13 +347,16 @@ const entryType = new GraphQLObjectType({
     },
     source: {
       type: new GraphQLNonNull(sourceType),
+      resolve: ({ id }) => database.getSource(id),  
     },
     target: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(targetType))),
+      resolve: ({ id }) => database.getTargets(id),  
     },
   },
 });
 
+/*
 const entryEdgeType = new GraphQLObjectType({
   name: "EntryEdge",
   fields: {
@@ -348,6 +386,7 @@ const entryConnectionType = new GraphQLObjectType({
     },
   },
 });
+*/
 
 const queryType = new GraphQLObjectType({
   name: "Query",
@@ -359,8 +398,9 @@ const queryType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve: entryResolver,
+      resolve: (_, { id }) => ({ id }),
     },
+    /*
     findEntries: {
       type: new GraphQLNonNull(entryConnectionType),
       args: {
@@ -379,6 +419,7 @@ const queryType = new GraphQLObjectType({
       },
       resolve: findEntriesResolver,
     },
+    */
   },
 });
 
