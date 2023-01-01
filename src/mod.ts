@@ -47,10 +47,13 @@ async function handleRequest(request: Request) {
   } else if (path == "/entries") {
     log.debug("path /entries");
     
-    const term = url.searchParams.get("term");
+    const value = url.searchParams.get("value");
+    const amount = url.searchParams.get("amount");
+    const before = url.searchParams.get("before");
+    const after = url.searchParams.get("after");
 
-    if (!term) {
-      log.debug("no query 'term'");
+    if (!value || !amount || (!before && !after)) {
+      log.debug("no query 'value' or 'amount' or ('before' or 'after')");
 
       const error = { message: "Invalid query." };
 
@@ -60,7 +63,7 @@ async function handleRequest(request: Request) {
     }
 
     // TODO: error handling to not crash server
-    const res = await database.findEntries(term);
+    const res = await database.findEntries(value, amount, after, before);
 
     log.debug("response", res);
 
