@@ -1,75 +1,64 @@
-import Fuse from "$fuse";
-import entries from "$entries" assert { type: "json" };
-import { deepMerge } from "$code-web-utilities/deep_merge.ts";
-import { deepFilter } from "$code-web-utilities/deep_filter.ts";
+import { createClient } from "supabase";
 
-const fuse_options = {
-  threshold: 0,
-  ignoreLocation: true,
-  includeMatches: true,
-  keys: [
-    "source.value",
-    "target.value.source.value",
-    "target.value.value.value",
-  ],
-};
+// TODO: handle undefined if missing
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_KEY = Deno.env.get("SUPABASE_KEY");
 
-const fuse_index = Fuse.createIndex(fuse_options.keys, entries);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const fuse = new Fuse(entries, fuse_options, Fuse.parseIndex(fuse_index));
+async function entry(id: string) {
+  const { data, error } = await supabase
+    .from("sources")
+    .select(`
+      id,
+      value,
+      meaning,
+      targets (
+        references (
+          sources (
+            value,
+            meaning
+            ),
+          kind,
+          tags (
+            value
+          )
+        ),
+        fields (
+          elements (
+            value,
+            categories (
+              value
+            )
+          ),
+          tags (
+            value
+          )
+        )
+      )
+    `)
+    .eq("id", id)
+    .order("meaning", { foreignTable: "targets" })
+    .order("index", { foreignTable: "targets.fields" })
+    .order("index", { foreignTable: "targets.fields.elements" });
 
-function filterResults(results) {
-  const resultsNew = [];
-
-  for (const result of results) {
-    const { item, matches } = result;
-
-    // don't filter if match only for index
-    if (matches.length == 1 && matches[0].key == "source.value") {
-      resultsNew.push(item);
-      continue;
-    }
-
-    let resultNew = {};
-
-    // note: group multiple matches per key, otherwise would become separate entries in highest ancestor array if processes separately
-    for (const key of fuse_options.keys) {
-      // skip match for index, otherwise would add whole item again
-      if (key == "source.value") {
-        continue;
-      }
-
-      const matchesForKey = matches.filter(({ key: k }) => k == key);
-
-      if (matchesForKey.length) {
-        const valuesForKey = matchesForKey.map(({ value }) => value);
-
-        const resultForKey = deepFilter(
-          item,
-          key.split("."),
-          (obj) => valuesForKey.some((value) => obj === value),
-        );
-
-        resultNew = deepMerge(resultNew, resultForKey);
-      }
-    }
-
-    resultsNew.push(resultNew);
+  if (error) {
+    throw error;
   }
 
-  return resultsNew;
+  return data;
 }
 
-function entry(id) {
-  return entries.find((entry) => entry.id == id);
-}
+async function findEntries(term: string) {
+  const { data, error } = await supabase
+    .from("sources")
+    .select();
 
-function findEntries(term) {
-  const resultsFuse = fuse.search(term);
+  if (error) {
+    throw error;
+  }
 
-  const results = filterResults(resultsFuse);
-
-  return results;
+  return data;
 }
 
 const database = {

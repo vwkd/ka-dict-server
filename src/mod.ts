@@ -1,59 +1,75 @@
 import { serve } from "$std/http/server.ts";
-import { graphql } from "$graphql";
 import { log } from "$utils/logger.ts";
-import { schema } from "./schema.ts";
+import { database } from "./database.ts"
 
 async function handleRequest(request: Request) {
   log.info("Handling request");
 
   const method = request.method;
+
+  if (method != "GET") {
+    log.debug("method not GET");
+
+    const error = { message: "Invalid method." };
+
+    const response = Response.json(error, { status: 405 });
+
+    return response;
+  }
+
   const url = new URL(request.url);
   const path = url.pathname;
 
-  if (path == "/api") {
-    log.debug("path /api");
+  if (path == "/entry") {
+    log.debug("path /entry");
+    
+    const id = url.searchParams.get("id");
 
-    if (method == "POST") {
-      log.debug("method POST");
+    if (!id) {
+      log.debug("no query 'id'");
 
-      // TODO: error handling to not crash server
-
-      const req = await request.json();
-
-      log.debug("request", req);
-
-      /* expected JSON
-      see https://graphql.org/learn/serving-over-http/
-      {
-        "query": "...",
-        "operationName": "...",
-        "variables": { "myVariable": "someValue", ... }
-      }
-      */
-
-      const res = await graphql({
-        schema,
-        source: req.query,
-        variableValues: req.variables,
-        operationName: req.operationName,
-      });
-
-      log.debug("response", res);
-
-      const response = Response.json(res);
-
-      return response;
-    } else {
-      log.debug("method not POST");
-
-      const error = { message: "Invalid method." };
+      const error = { message: "Invalid query." };
 
       const response = Response.json(error, { status: 405 });
 
       return response;
     }
+
+    // TODO: error handling to not crash server
+    const res = await database.entry(id);
+
+    log.debug("response", res);
+
+    const response = Response.json(res);
+
+    return response;
+
+  } else if (path == "/entries") {
+    log.debug("path /entries");
+    
+    const term = url.searchParams.get("term");
+
+    if (!term) {
+      log.debug("no query 'term'");
+
+      const error = { message: "Invalid query." };
+
+      const response = Response.json(error, { status: 405 });
+
+      return response;
+    }
+
+    // TODO: error handling to not crash server
+    const res = await database.findEntries(term);
+
+    log.debug("response", res);
+
+    const response = Response.json(res);
+
+    return response;
+    
   } else {
-    log.debug("path not /api");
+    log.debug("path not /entry or /entries");
 
     const error = { message: "Invalid path." };
 

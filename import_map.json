@@ -1,10 +1,7 @@
 {
   "imports": {
-    "$std/": "https://deno.land/std@0.159.0/",
-    "$graphql": "https://cdn.skypack.dev/graphql@16.6.0",
-    "$fuse": "https://cdn.skypack.dev/fuse.js@6.6.2",
-    "$entries": "https://raw.githubusercontent.com/vwkd/kita-parser/output/vz.json",
+    "$std/": "https://deno.land/std@0.170.0/",
     "$utils/": "https://raw.githubusercontent.com/vwkd/kita-utils/c721ac460a7defbfceaff4ae062c1d4d4b1f193e/src/",
-    "$code-web-utilities/": "https://raw.githubusercontent.com/vwkd/code-web-utilities/d29b456b80de1f60b349238908b86bd83ebcb3b0/src/"
+    "supabase": "https://esm.sh/@supabase/supabase-js@2"
   }
 }
